@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Applicant</string>
+    <string name="name">Name: </string>
+    <string name="submit">Submit</string>
+    <string name="add_applicant">Add Applicant</string>
+    <string name="add_applicant_name">Applicant Name</string>
+    <string name="add_applicant_firts_second_name">Firts Second Name</string>
+    <string name="add_applicant_second_second_name">Other Second Name</string>
+    <string name="add_applicant_school">School</string>
+    <string name="recurrence">Career</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="value_is_empty">The field is empty!</string>
+    <string name="save">Save</string>
+</resources>

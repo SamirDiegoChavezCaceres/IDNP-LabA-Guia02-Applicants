@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +58,7 @@ fun AddApplicantFormAppScreen() {
     var applicantSchool: String by rememberSaveable { mutableStateOf("") }
     var recurrence by rememberSaveable { mutableStateOf(Recurrence.Medicina.name) }
     var birthDate by rememberSaveable { mutableStateOf(Date().time) }
+    val registeredApplicantNames = remember { mutableStateListOf<String>() }
 
     Column (
         modifier = Modifier
@@ -135,42 +138,72 @@ fun AddApplicantFormAppScreen() {
         RecurrenceDropdownMenu { recurrence = it }
 
         Spacer(modifier = Modifier.padding(8.dp))
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .align(Alignment.CenterHorizontally),
-            onClick = {
-                validateMedication(
-                    name = applicantName,
-                    firtsSName = applicantFName,
-                    SecondSName = applicantSName,
-                    recurrence = recurrence,
-                    birthDate = birthDate,
-                    school = applicantSchool,
-                    onInvalidate = {
-                        Log.d("Activity", "invalido "+applicantName)
-                    },
-                    onValidate = {
-                        // TODO: Navigate to next screen / Store medication info
-                        Log.d("Activity", "Applicant Added: "+applicantName+" "+
-                                                                        applicantFName+" "+
-                                                                        applicantSName+"\n"+
-                                                    "career: "+recurrence+"\n"+
-                                                    "birthDate: "+birthDate+"\n"+
-                                                    "School: "+applicantSchool+"\n")
-                    }
-                )
-            },
-            shape = MaterialTheme.shapes.extraLarge
+
+        // Row para envolver los botones y colocarlos en la misma línea
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = stringResource(id = R.string.save),
-                style = MaterialTheme.typography.bodyLarge
-            )
+            Button(
+                modifier = Modifier
+                    .width(200.dp) // Establecer un ancho fijo para ambos botones
+                    .height(56.dp),
+                onClick = {
+                    validateMedication(
+                        name = applicantName,
+                        firtsSName = applicantFName,
+                        SecondSName = applicantSName,
+                        recurrence = recurrence,
+                        birthDate = birthDate,
+                        school = applicantSchool,
+                        onInvalidate = {
+                            Log.d("Activity", "invalido "+applicantName)
+                        },
+                        onValidate = {
+                            // TODO: Navigate to next screen / Store medication info
+                            Log.d("Activity", "Applicant Added: "+applicantName+" "+
+                                    applicantFName+" "+
+                                    applicantSName+"\n"+
+                                    "career: "+recurrence+"\n"+
+                                    "birthDate: "+birthDate+"\n"+
+                                    "School: "+applicantSchool+"\n")
+                            // Botón para registrar datos del aplicante en la lista
+                            val newApplicantName = "$applicantName $applicantFName $applicantSName"
+                            registeredApplicantNames.add(newApplicantName)
+                        }
+                    )
+                },
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Text(
+                    text = stringResource(id = R.string.save),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+
+            Button(
+                modifier = Modifier
+                    .width(200.dp) // Establecer un ancho fijo para ambos botones
+                    .height(56.dp),
+                onClick = {
+                    // Botón para listar los nombres de los aplicantes registrados
+                    listApplicantNames(registeredApplicantNames)
+                },
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Text(
+                    text = "Listar",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
+}
 
+private fun listApplicantNames(applicantNames: List<String>) {
+    applicantNames.forEachIndexed { index, name ->
+        Log.d("ApplicantList", "Aplicante ${index + 1}: $name")
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
